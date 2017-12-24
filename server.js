@@ -15,6 +15,8 @@ http.createServer(function (req, res) {
     res.end(txt);
 }).listen(8080);
 
+
+//Generate Code for Intertechno Switches for sending it via sendTriState()
 function generateIntertechnoCode(familyCode, switchCode, onOff){
     var codes = ["0000", "F000", "0F00", "FF00", "00F0", "F0F0", "0FF0", "FFF0", "000F", "F00F", "0F0F", "FF0F", "00FF", "F0FF", "0FFF", "FFFF"];
     var finalCode = "";
@@ -28,7 +30,7 @@ function generateIntertechnoCode(familyCode, switchCode, onOff){
     }
     return finalCode
 }
-
+//Generate Code for ELRO Switches for sending it via sendTriState()
 function generateElroCode(familyCode, switchCode, onOff){
     var finalCode = "";
     familyCode = familyCode.toString()
@@ -36,7 +38,7 @@ function generateElroCode(familyCode, switchCode, onOff){
     //from 10101 to F0F0F
     for (x in familyCode){
         if(x == "1"){
-            finalCode += F;
+            finalCode += "F";
         }else{
             finalCode += 0;
         }
@@ -56,5 +58,6 @@ function sendTriState(code){
     wpi.setup("wpi");
     wpi.delayMicroseconds(300);
     //...
+    digitalWrite(0, state);
     sendSync();
 }
