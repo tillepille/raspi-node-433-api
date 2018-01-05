@@ -11,10 +11,11 @@ At least thats the plan...
     * from switchnumber like 3 to "000FF"
 * Exception safety
 * saving the current state of the switches
+* get current state of switches
 
 ##Already Accomplished
 * generating codes for Intertechno
-* build minimal server communication
+* build dummy communication to check the generated Codes
 
 
-**If you're a NodeJS Pro with too much time and knowledge of wiringPI please contact me, make a pull request...**
+**If you're a NodeJS Pro with too much time and knowledge of wiringPI please contact me, make a pull request,...**

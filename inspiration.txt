@@ -15,7 +15,8 @@ LOW >= 0.1.2
 
 }
 
-
+OUTPUT FROM daemon
+for switch 01100 3 1 : F00FF FFF00 0F
 
 
 github.com/xkonni/raspberry-remote
