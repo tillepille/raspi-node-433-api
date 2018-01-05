@@ -60,7 +60,7 @@ function getState(familyCode, switchCode){
     var code = familyCode.toString()+switchCode.toString();
     var state = switchStateDict[code];
     //what if switch doesnt exist
-    if(state.length() > 0){
+    if(state == 1 || state == 0){
         return state;
     }else {
         return -1;
