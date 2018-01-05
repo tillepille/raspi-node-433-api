@@ -65,7 +65,6 @@ function mainController(family,familyCode, switchCode,onOff){
 
 function getState(familyCode, switchCode){
     var code = familyCode.toString+switchCode.toString;
-    var index = getSwitchIndex(code);
     var state = switchStateDict[code];
     //what if switch doesnt exist
     if(state.length > 0){
