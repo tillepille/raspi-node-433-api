@@ -70,6 +70,7 @@ function getState(familyCode, switchCode){
 function changeState(familyCode,switchCode,onOff){
     var code = familyCode.toString+switchCode.toString;
     switchStateDict[code] = onOff;
+    console.log(code+": "+switchStateDict[code]);
 }
 
 //Generate Code for Intertechno Switches for sending it via sendTriState()
@@ -90,8 +91,7 @@ function generateIntertechnoCode(familyCode, switchCode, onOff){
 //Generate Code for ELRO Switches for sending it via sendTriState()
 function generateElroCode(familyCode, switchCode, onOff){
     var finalCode = "";
-    var familyCodeString = familyCode.toString();
-    var familyCodeArray = familyCodeString.split("");
+    var familyCodeArray = familyCode.toString().split("");
     //from 10101 to F0F0F
     finalCode += replaceOnes(familyCodeArray, true);
     var sn = Number(switchCode);
