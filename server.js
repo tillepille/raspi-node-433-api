@@ -5,7 +5,6 @@ var url = require('url');
 var switchStateDict= {};
 var wPin = 0;
 
-//example Call ip.add.ress:8080/?family=inter&familyCode=12&switchCode=11&onOff=1
 http.createServer(function (req, res) {
     //
     wpi.setup("wpi");
