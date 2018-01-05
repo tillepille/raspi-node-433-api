@@ -77,7 +77,6 @@ function getState(familyCode, switchCode){
 
 function changeState(familyCode,switchCode,onOff){
     var code = familyCode.toString+switchCode.toString;
-    var index = getSwitchIndex(code);
     switchStateDict[code] = onOff;
 }
 
@@ -145,4 +144,5 @@ function sendTriState(code){
     //...
     //digitalWrite(0, state);
     //sendSync();
+    return code;
 }
