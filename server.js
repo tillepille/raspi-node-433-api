@@ -1,4 +1,4 @@
-var wpi = require('wiring-pi');
+var wpi = require('wiringpi-node');
 var http = require('http');
 var url = require('url');
 
@@ -7,9 +7,13 @@ var wPin = 0;
 
 //example Call ip.add.ress:8080/?family=inter&familyCode=12&switchCode=11&onOff=1
 http.createServer(function (req, res) {
+    //
+    wpi.setup("wpi");
+    wpi.pinMode(wPin, wpi.OUTPUT);
+    console.log("Set up wiringPi-Node");
 
     var q = url.parse(req.url, true).query;
-    var stat = mainController(q.family,q.familyCode, q.switchCode,q.onOff);
+    var stat = mainController(q.sys,q.family, q.switchCode,q.onOff);
     //asked for status give success + status as plain text
     if(-1 < stat && stat < 2){
         res.writeHead(200, {'Content-Type': 'text/html'});
@@ -17,31 +21,19 @@ http.createServer(function (req, res) {
     //asked for switching, give if switch exists or nor
     }else if (stat == 200 || stat == 404) {
         res.writeHead(stat,{'Content-Type': 'text/html'});
+        var txt = "Sucess!";
     //any other gives an internal error
     }else {
+        console.log("Error in main controller");
         res.writeHead(502, {'Content-Type': 'text/html'});
+        var txt ="502 Internal Error";
     }
-
-    //Comment to check the incoming data and generated codes
-
-    /*
-    var txt = q.family+" "+q.familyCode+" "+q.switchCode+" get switched "+q.onOff;
-    switch (q.family) {
-        case "inter":
-            txt += "\n generated Inter Code: " + generateIntertechnoCode(q.familyCode,q.switchCode,q.onOff);
-            break;
-	    case "elro":
-            txt += "\n generated Elro Code: " + generateElroCode(q.familyCode,q.switchCode,q.onOff);
-            break;
-        default:
-            txt += "unknown system, nothing to do...";
-    }
-    */
+}
     res.end(txt);
 }).listen(8080);
 
 //main controller
-function mainController(family,familyCode, switchCode,onOff){
+function mainController(sys,familyCode, switchCode,onOff){
     if(onOff == 2){
         return getState(familyCode,switchCode);
     }else{
@@ -93,6 +85,7 @@ function generateIntertechnoCode(familyCode, switchCode, onOff){
     }else{
         finalCode += "F0";
     }
+    console.log("generated inter Code: "+finalCode);
     return finalCode;
 }
 //Generate Code for ELRO Switches for sending it via sendTriState()
@@ -116,6 +109,7 @@ function generateElroCode(familyCode, switchCode, onOff){
     }else{
         finalCode += "F0";
     }
+    console.log("generated elro Code: "+finalCode);
     return finalCode;
 }
 //inverted == true 0->F, inverted == false 1
@@ -140,8 +134,6 @@ function replaceOnes(string,inverted){
 }
 
 function sendTriState(code){
-    wpi.setup("wpi");
-    wpi.pinMode(wPin,OUTPUT);
     code = code.split("");
     for(i in code){
         switch (code[i]){
@@ -161,14 +153,15 @@ function sendTriState(code){
     }
     //sync bit
     transmit(1,31);
+    console.log("Send TriState Signal: "+code);
 }
 function transmit(highPulses,lowPulses){
     for(var i= 0; i < highPulses;i++){
-        digitalWrite(wPin,HIGH);
+        wpi.digitalWrite(wPin,1);
         wpi.delayMicroseconds(300);
     }
     for(var i = 0; i < lowPulses;i++){
-        wpi.digitalWrite(wPin,LOW);
+        wpi.digitalWrite(wPin,0);
         wpi.delayMicroseconds(300);
     }
 }
