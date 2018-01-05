@@ -3,6 +3,8 @@ var http = require('http');
 var url = require('url');
 
 var switchStateDict= {};
+var wPin = 0;
+
 //example Call ip.add.ress:8080/?family=inter&familyCode=12&switchCode=11&onOff=1
 http.createServer(function (req, res) {
 
@@ -138,10 +140,35 @@ function replaceOnes(string,inverted){
 }
 
 function sendTriState(code){
-    //wpi.setup("wpi");
-    //wpi.delayMicroseconds(300);
-    //...
-    //digitalWrite(0, state);
-    //sendSync();
-    return code;
+    wpi.setup("wpi");
+    wpi.pinMode(wPin,OUTPUT);
+    code = code.split("");
+    for(i in code){
+        switch (code[i]){
+            case "0":
+                transmit(1,3);
+                transmit(1,3);
+                break;
+            case "1":
+                transmit(3,1);
+                transmit(3,1);
+                break;
+            case "F":
+                transmit(1,3);
+                transmit(3,1);
+                break;
+        }
+    }
+    //sync bit
+    transmit(1,31);
+}
+function transmit(highPulses,lowPulses){
+    for(var i= 0; i < highPulses;i++){
+        digitalWrite(wPin,HIGH);
+        wpi.delayMicroseconds(300);
+    }
+    for(var i = 0; i < lowPulses;i++){
+        wpi.digitalWrite(wPin,LOW);
+        wpi.delayMicroseconds(300);
+    }
 }
