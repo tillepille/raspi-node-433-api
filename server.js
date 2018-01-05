@@ -90,7 +90,7 @@ function generateIntertechnoCode(familyCode, switchCode, onOff){
 //Generate Code for ELRO Switches for sending it via sendTriState()
 function generateElroCode(familyCode, switchCode, onOff){
     var finalCode = "";
-    familyCode = familyCode.toString()
+    familyCode = familyCode.toString();
     familyCode = familyCode.split("");
     //from 10101 to F0F0F
     finalCode += replaceOnes(familyCode, true);
