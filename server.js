@@ -36,7 +36,7 @@ function mainController(sys,familyCode, switchCode,onOff){
     if(onOff == 2){
         return getState(familyCode,switchCode);
     }else{
-        switch (family){
+        switch (sys){
             case "inter":
                 sendTriState(generateIntertechnoCode(familyCode,switchCode,onOff));
                 changeState(familyCode,switchCode,onOff);
