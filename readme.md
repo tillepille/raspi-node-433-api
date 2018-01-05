@@ -7,15 +7,13 @@ At least thats the plan...
 
 ##To-Do
 * understanding nodejs-wiring-pi
-* generate codes for ELRO (10 pins)
-    * from switchnumber like 3 to "000FF"
 * Exception safety
-* saving the current state of the switches
-* get current state of switches
+* write sendTriState() ! 
 
 ##Already Accomplished
-* generating codes for Intertechno
-* build dummy communication to check the generated Codes
+* generating codes for Intertechno and ELRO
+* untested minimal server frame
+* untested state mechanism
 
 
 **If you're a NodeJS Pro with too much time and knowledge of wiringPI please contact me, make a pull request,...**

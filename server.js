@@ -3,22 +3,61 @@ var http = require('http');
 var url = require('url');
 
 var switchStateDict= {};
-//example Call ip.add.ress:8080/?family=inter&familyCode=12&switchCode=11%onOff=1
+//example Call ip.add.ress:8080/?family=inter&familyCode=12&switchCode=11&onOff=1
 http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
+
     var q = url.parse(req.url, true).query;
+    var stat = mainController(q.family,q.familyCode, q.switchCode,q.onOff);
+    //asked for status give success + status as plain text
+    if(-1 < stat && stat < 2){
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        var txt = stat;
+    //asked for switching, give if switch exists or nor
+    }else if (stat == 200 || stat == 404) {
+        res.writeHead(stat,{'Content-Type': 'text/html'});
+    //any other gives an internal error
+    }else {
+        res.writeHead(502, {'Content-Type': 'text/html'});
+    }
+
+    /*
     var txt = q.family+" "+q.familyCode+" "+q.switchCode+" get switched "+q.onOff;
     switch (q.family) {
         case "inter":
             txt += "\n generated Inter Code: " + generateIntertechnoCode(q.familyCode,q.switchCode,q.onOff);
-        case "elro":
+            break;
+	    case "elro":
             txt += "\n generated Elro Code: " + generateElroCode(q.familyCode,q.switchCode,q.onOff);
             break;
         default:
-        txt += "unknown system, nothing to do...";
+            txt += "unknown system, nothing to do...";
     }
+    */
     res.end(txt);
 }).listen(8080);
+
+//main controller
+function mainController(family,familyCode, switchCode,onOff){
+    if(onOff == 2){
+        return getState(familyCode,switchCode);
+    }else{
+        switch (family){
+            case "inter":
+                sendTriState(generateIntertechnoCode(familyCode,switchCode,onOff));
+                changeState(familyCode,switchCode,onOff);
+                return 200;
+                break;
+            case "elro":
+                sendTriState(generateElroCode(familyCode,switchCode,onOff));
+                changeState(familyCode,switchCode,onOff);
+                return 200;
+                break;
+            default:
+            return 404;
+        }
+
+    }
+}
 
 //functions for current state
 
@@ -61,7 +100,9 @@ function generateElroCode(familyCode, switchCode, onOff){
     familyCode = familyCode.split("");
     //from 10101 to F0F0F
     finalCode += replaceOnes(familyCode, true);
-    var switchBinaryCode = switchCode.toString(2);
+    var sn = Number(switchCode);
+    var switchBinaryCode = sn.toString(2);
+    switchBinaryCode = replaceOnes(switchBinaryCode,true);
     //fill up to 5 bits
     while(switchBinaryCode.length < 5){
         switchBinaryCode = "F" + switchBinaryCode;
@@ -77,16 +118,16 @@ function generateElroCode(familyCode, switchCode, onOff){
 }
 //inverted == true 0->F, inverted == false 1
 function replaceOnes(string,inverted){
-    var result;
+    var result = "";
     for (x in string){
         if(inverted){
-            if(x == "1"){
+            if(string[x] == 1){
                 result += "0";
             }else{
                 result += "F";
             }
         }else{
-            if(x == "1"){
+            if(string[x] == 1){
                 result += "F";
             }else{
                 result += "0";
