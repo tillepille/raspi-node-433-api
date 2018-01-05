@@ -28,7 +28,6 @@ http.createServer(function (req, res) {
         res.writeHead(502, {'Content-Type': 'text/html'});
         var txt ="502 Internal Error";
     }
-}
     res.end(txt);
 }).listen(8080);
 
