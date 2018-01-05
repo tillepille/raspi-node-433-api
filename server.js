@@ -20,6 +20,8 @@ http.createServer(function (req, res) {
         res.writeHead(502, {'Content-Type': 'text/html'});
     }
 
+    //Comment to check the incoming data and generated codes
+
     /*
     var txt = q.family+" "+q.familyCode+" "+q.switchCode+" get switched "+q.onOff;
     switch (q.family) {
@@ -138,9 +140,9 @@ function replaceOnes(string,inverted){
 }
 
 function sendTriState(code){
-    wpi.setup("wpi");
-    wpi.delayMicroseconds(300);
+    //wpi.setup("wpi");
+    //wpi.delayMicroseconds(300);
     //...
-    digitalWrite(0, state);
-    sendSync();
+    //digitalWrite(0, state);
+    //sendSync();
 }
