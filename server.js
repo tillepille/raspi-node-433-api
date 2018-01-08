@@ -1,16 +1,25 @@
-var wpi = require('wiringpi-node');
+//var wpi = require('wiringpi-node');
 var http = require('http');
 var url = require('url');
 
+var rpi433    = require('rpi-433'),
+    rfSniffer = rpi433.sniffer({
+      pin: 2,                     //Snif on GPIO 2 (or Physical PIN 13)
+      debounceDelay: 500          //Wait 500ms before reading another code
+    }),
+    rfEmitter = rpi433.emitter({
+      pin: 0,                     //Send through GPIO 0 (or Physical PIN 11)
+      pulseLength: 350            //Send the code with a 350 pulse length
+    });
+
 var switchStateDict= {};
 var wPin = 0;
+//set up wiringPi
+wpi.setup("wpi");
+wpi.pinMode(wPin, wpi.OUTPUT);
+console.log("Set up wiringPi-Node");
 
 http.createServer(function (req, res) {
-    //
-    wpi.setup("wpi");
-    wpi.pinMode(wPin, wpi.OUTPUT);
-    console.log("Set up wiringPi-Node");
-
     var q = url.parse(req.url, true).query;
     var stat = mainController(q.sys,q.family, q.switchCode,q.onOff);
     //asked for status give success + status as plain text
@@ -32,29 +41,32 @@ http.createServer(function (req, res) {
 
 //main controller
 function mainController(sys,familyCode, switchCode,onOff){
+    var code = "";
     if(onOff == 2){
         return getState(familyCode,switchCode);
     }else{
         switch (sys){
             case "inter":
-                sendTriState(generateIntertechnoCode(familyCode,switchCode,onOff));
+                code = generateIntertechnoCode(familyCode,switchCode,onOff));
                 changeState(familyCode,switchCode,onOff);
                 return 200;
                 break;
             case "elro":
-                sendTriState(generateElroCode(familyCode,switchCode,onOff));
+                code = generateElroCode(familyCode,switchCode,onOff));
                 changeState(familyCode,switchCode,onOff);
                 return 200;
                 break;
             default:
             return 404;
         }
+        rfEmitter.sendCode(code, function(error, stdout) {   //Send 1234
+            if(!error) console.log(stdout); //Should display 1234
+        });
 
     }
 }
 
 //functions for current state
-
 function getState(familyCode, switchCode){
     var code = familyCode.toString()+switchCode.toString();
     var state = switchStateDict[code];
@@ -131,6 +143,10 @@ function replaceOnes(string,inverted){
     return result;
 }
 
+/*
+OBSOLETE
+
+//modelling the waveforms
 function sendTriState(code){
     code = code.split("");
     for(i in code){
@@ -153,13 +169,16 @@ function sendTriState(code){
     transmit(1,31);
     console.log("Send TriState Signal: "+code);
 }
+//send actual Pulses of
 function transmit(highPulses,lowPulses){
     for(var i= 0; i < highPulses;i++){
         wpi.digitalWrite(wPin,1);
-        wpi.delayMicroseconds(300);
+        wpi.delayMicroseconds(delayTime);
     }
     for(var i = 0; i < lowPulses;i++){
         wpi.digitalWrite(wPin,0);
-        wpi.delayMicroseconds(300);
+        wpi.delayMicroseconds(delayTime);
     }
+
+    */
 }
