@@ -1,4 +1,4 @@
-#NodeJs Wiring-Pi Webserver
+# NodeJs Wiring-Pi Webserve
 
 based on xkonni/raspbery-remote idea with RCSwitch mechanisms.
 Also based on eroak/rpi-433 wich i forked and tweaked to myself, will make a pull request later...
@@ -6,11 +6,11 @@ Also based on eroak/rpi-433 wich i forked and tweaked to myself, will make a pul
 Its supposed to switch 433MHz power outlets and intertechno switches by web. Mainly to use it with another NodeJS Instance of Homebridge.
 At least thats the plan...
 
-##To-Do
+## To-Do
 * Exception safety
 * make it work
 
-##Already Accomplished
+## Already Accomplished
 * generating codes for Intertechno and ELRO
 * untested minimal server frame
 * State of switches is working..

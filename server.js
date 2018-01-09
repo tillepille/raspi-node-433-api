@@ -17,14 +17,17 @@ http.createServer(function (req, res) {
     var q = url.parse(req.url, true).query;
     var stat = mainController(q.sys,q.family, q.switchCode,q.onOff);
     //asked for status give success + status as plain text
-    if(-1 < stat && stat < 2){
+    if(stat == 0 && stat == 1){
         res.writeHead(200, {'Content-Type': 'text/html'});
         var txt = stat;
     //asked for switching, give if switch exists or nor
-    }else if (stat == 200 || stat == 404) {
+    }else if (stat == 200) {
         res.writeHead(stat,{'Content-Type': 'text/html'});
         var txt = "Sucess!";
     //any other gives an internal error
+    }else if (stat == 404) {
+        res.writeHead(stat,{'Content-Type': 'text/html'});
+        var txt = "Couldn't find this Switch: "+q.sys+" "+q.family+" "+q.switchCode;
     }else {
         console.log("Error in main controller.\n "+q.sys+" "+q.family+" "+q.switchCode+" status: "+stat);
         res.writeHead(502, {'Content-Type': 'text/html'});
