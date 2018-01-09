@@ -1,4 +1,3 @@
-//var wpi = require('wiringpi-node');
 var http = require('http');
 var url = require('url');
 
@@ -6,18 +5,14 @@ var rpi433    = require('rpi-433-tristate'),
     rfSniffer = rpi433.sniffer({
       pin: 2,                     //Snif on GPIO 2 (or Physical PIN 13)
       debounceDelay: 500          //Wait 500ms before reading another code
-    }),
+    });
+
     rfEmitter = rpi433.emitterTriState({
       pin: 0,                     //Send through GPIO 0 (or Physical PIN 11)
       pulseLength: 350            //Send the code with a 350 pulse length
     });
-
+//Array for State of Switches
 var switchStateDict= {};
-var wPin = 0;
-//set up wiringPi
-wpi.setup("wpi");
-wpi.pinMode(wPin, wpi.OUTPUT);
-console.log("Set up wiringPi-Node");
 
 http.createServer(function (req, res) {
     var q = url.parse(req.url, true).query;
