@@ -2,7 +2,7 @@
 var http = require('http');
 var url = require('url');
 
-var rpi433    = require('rpi-433'),
+var rpi433    = require('rpi-433-tristate'),
     rfSniffer = rpi433.sniffer({
       pin: 2,                     //Snif on GPIO 2 (or Physical PIN 13)
       debounceDelay: 500          //Wait 500ms before reading another code
@@ -179,6 +179,5 @@ function transmit(highPulses,lowPulses){
         wpi.digitalWrite(wPin,0);
         wpi.delayMicroseconds(delayTime);
     }
-
-    */
 }
+*/
