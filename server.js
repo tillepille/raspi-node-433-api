@@ -1,16 +1,15 @@
 var http = require('http');
 var url = require('url');
+var rpi433    = require('rpi-433-tristate');
 
-var rpi433    = require('rpi-433-tristate'),
-    rfSniffer = rpi433.sniffer({
-      pin: 2,                     //Snif on GPIO 2 (or Physical PIN 13)
-      debounceDelay: 500          //Wait 500ms before reading another code
-    });
-
-    rfEmitter = rpi433.emitterTriState({
-      pin: 0,                     //Send through GPIO 0 (or Physical PIN 11)
-      pulseLength: 350            //Send the code with a 350 pulse length
-    });
+rfSniffer = rpi433.sniffer({
+    pin: 2,                     //Snif on GPIO 2 (or Physical PIN 13)
+    debounceDelay: 500          //Wait 500ms before reading another code
+});
+rfEmitter = rpi433.emitterTriState({
+    pin: 0,                     //Send through GPIO 0 (or Physical PIN 11)
+    pulseLength: 300            //Send the code with a 350 pulse length
+});
 //Array for State of Switches
 var switchStateDict= {};
 
@@ -27,7 +26,7 @@ http.createServer(function (req, res) {
         var txt = "Sucess!";
     //any other gives an internal error
     }else {
-        console.log("Error in main controller");
+        console.log("Error in main controller.\n "+q.sys+" "+q.family+" "+q.switchCode+" status: "+stat);
         res.writeHead(502, {'Content-Type': 'text/html'});
         var txt ="502 Internal Error";
     }
@@ -35,29 +34,34 @@ http.createServer(function (req, res) {
 }).listen(8080);
 
 //main controller
-function mainController(sys,familyCode, switchCode,onOff){
+function mainController(sys, familyCode, switchCode, onOff){
     var code = "";
+    var returnCode = 502;
     if(onOff == 2){
         return getState(familyCode,switchCode);
-    }else{
+    }else if(onOff == 0 || onOff == 1){
         switch (sys){
             case "inter":
                 code = generateIntertechnoCode(familyCode,switchCode,onOff);
                 changeState(familyCode,switchCode,onOff);
-                return 200;
+                returnCode = 200;
                 break;
             case "elro":
                 code = generateElroCode(familyCode,switchCode,onOff);
                 changeState(familyCode,switchCode,onOff);
-                return 200;
+                returnCode = 200;
                 break;
             default:
-            return 404;
+            returnCode = 404;
         }
+        console.log("Sending Code " + code +"now...");
         rfEmitter.sendCode(code, function(error, stdout) {   //Send 1234
             if(!error) console.log(stdout); //Should display 1234
         });
+        return returnCode;
 
+    }else {
+        return 404;
     }
 }
 
@@ -114,7 +118,6 @@ function generateElroCode(familyCode, switchCode, onOff){
     }else{
         finalCode += "F0";
     }
-    console.log("generated elro Code: "+finalCode);
     return finalCode;
 }
 //inverted == true 0->F, inverted == false 1
