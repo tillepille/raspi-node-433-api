@@ -47,12 +47,12 @@ function mainController(sys,familyCode, switchCode,onOff){
     }else{
         switch (sys){
             case "inter":
-                code = generateIntertechnoCode(familyCode,switchCode,onOff));
+                code = generateIntertechnoCode(familyCode,switchCode,onOff);
                 changeState(familyCode,switchCode,onOff);
                 return 200;
                 break;
             case "elro":
-                code = generateElroCode(familyCode,switchCode,onOff));
+                code = generateElroCode(familyCode,switchCode,onOff);
                 changeState(familyCode,switchCode,onOff);
                 return 200;
                 break;
