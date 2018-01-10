@@ -3,7 +3,7 @@
 Inspired by the [xkonni/raspbery-remote](https://github.com/xkonni/raspberry-remote) idea with RCSwitch mechanisms. But unfortunately this has issues with Raspian Stretch...  
 Also based on [eroak/rpi-433](https://github.com/eroak/rpi-433) which I forked and tweaked to myself, will make a pull request later...
 
-It's supposed to switch 433MHz ELRO style power outlets and intertechno switches by web. Mainly to use it with another NodeJS Instance of [Homebridge] (https://github.com/nfarina/homebridge).
+It's supposed to switch 433MHz ELRO style power outlets and intertechno switches by web. Mainly to use it with another NodeJS Instance of [Homebridge](https://github.com/nfarina/homebridge).
 
 
 ## To-Do
