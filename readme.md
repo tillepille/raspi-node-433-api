@@ -16,10 +16,10 @@ The only dependency is on `rpi-433-tristate` at the moment, hopefully this goes 
 On default this runs on Port 8080, modify the server.js if you want to use something else.
 To work properly you need to set the following attributes:
 
-* family -> `elro` or `inter`. inter works for Intertechno devices with two wheels on the back. (2x 1-16 resp. A-F, 1-16).
+* sys -> `elro` or `inter`. inter works for Intertechno devices with two wheels on the back. (2x 1-16 resp. A-F, 1-16).
     elro should work for the cheapest 433MHz Outlets you can find. They have 10 dip switches you can use with binary numbering.
-* familyCode -> depends on family. First wheel or first 5 dip switches.See examples below
-* switchcode -> Second wheel or last 5 dip switches.
+* family -> depends on family. First wheel or first 5 dip switches.See examples below
+* switchCode -> Second wheel or last 5 dip switches.
 * onOff -> **1 : switch on, 0 : switch off, 2 : get current status of switch**
 
 *Note: onOff=2 returns 1 if the switch is on or 0 if the switch is off. This can be used by homebridge to tell, if the switch is on or not, so the displaying is more reliable.*
