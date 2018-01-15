@@ -8,13 +8,13 @@ It's supposed to switch 433MHz ELRO style power outlets and intertechno switches
 ## How To use
 
 ### Preparation
-* install (wiringi)[https://projects.drogon.net/raspberry-pi/wiringpi/]
+* install [wiringPi](https://projects.drogon.net/raspberry-pi/wiringpi/)
 * install (obivously) node and npm
 * add an 433MHz sender to your GPIO Pin 17 and power it properly.
 
 ![wiring scheme](https://alexbloggt.com/wp-content/uploads/2015/04/RPi-433MHz-Transmitter_neu_Steckplatine.png)
 
-*Source: alexbloggt.com* 
+*Source: [alexbloggt.com](https://alexbloggt.com)*
 
 
 
