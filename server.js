@@ -37,7 +37,14 @@ function mainController(sys, familyCode, switchCode, onOff){
     var code = "";
     var returnCode = 502;
     if(onOff == 2){
-        return getState(familyCode,switchCode);
+        var state = getState(familyCode,switchCode);
+        // in case the node just started and doesnt know the current state of a switch
+        // the default is off.
+        if (state == 0 || state == 1){
+            return state;
+        }else {
+            return 0;
+        }
     }else if(onOff == 0 || onOff == 1){
         switch (sys){
             case "inter":
