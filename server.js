@@ -61,9 +61,7 @@ function mainController(sys, familyCode, switchCode, onOff){
             returnCode = 404;
         }
         console.log("Sending Code " + code +" now...");
-        rfEmitter.sendCode(code, function(error, stdout) {   //Send 1234
-            if(!error) console.log(stdout); //Should display 1234
-        });
+        sleep(100, function(){rfEmitter.sendCode(code);});
         return returnCode;
 
     }else {
@@ -148,4 +146,13 @@ function replaceOnes(string,inverted){
         }
     }
     return result;
+}
+
+// sleep for multiple Calls by a e.g. a scene
+function sleep(time, callback) {
+    var stop = new Date().getTime();
+    while(new Date().getTime() < stop + time) {
+        ;
+    }
+    callback();
 }
