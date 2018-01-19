@@ -60,8 +60,8 @@ function mainController(sys, familyCode, switchCode, onOff){
             default:
             returnCode = 404;
         }
-        console.log("Sending Code " + code +" now...");
-        sleep(100, function(){rfEmitter.sendCode(code);});
+        console.log(new Date().toString() + " Sending Code " + code +" now...");
+        sleep(300, function(){rfEmitter.sendCode(code);});
         return returnCode;
 
     }else {
@@ -100,7 +100,7 @@ function generateIntertechnoCode(familyCode, switchCode, onOff){
     }else{
         finalCode += "F0";
     }
-    console.log("generated inter Code: "+finalCode);
+    //console.log("generated inter Code: "+finalCode);
     return finalCode;
 }
 
