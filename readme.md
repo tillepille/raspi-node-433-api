@@ -4,10 +4,8 @@ Inspired by the [xkonni/raspbery-remote](https://github.com/xkonni/raspberry-rem
 
 It's supposed to switch 433MHz ELRO style power outlets and intertechno switches by web. Mainly to use it with another NodeJS Instance of [Homebridge](https://github.com/nfarina/homebridge).
 
+## Preparation
 
-## How To use
-
-### Preparation
 * install [wiringPi](https://projects.drogon.net/raspberry-pi/wiringpi/)
 * install (obivously) node and npm
 * add an 433MHz sender to your GPIO Pin 17 and power it properly.
@@ -17,7 +15,7 @@ It's supposed to switch 433MHz ELRO style power outlets and intertechno switches
 
 *Source: [alexbloggt.com](https://alexbloggt.com)*
 
-
+## How To use
 
 In order to run this node you need to run `sudo nodejs server.js` because of the Raspberry GPIO system.
 The only dependency is on `rpi-433-tristate` at the moment, hopefully this goes back to the `rpi-433` base version of eroak in a future version.
@@ -37,6 +35,3 @@ Example Call:           `ip.add.ress:8080/?sys=inter&family=12&switchCode=11&onO
 Another example Call:   `ip.add.ress:8080/?sys=elro&family=00100&switchCode=3&onOff=0`
 
 **If you're experiencing any problems or have improvement ideas, please open an issue, contact me, make a pull request,...**
-
-## To-Do
-* more stability (exception safety,...)
