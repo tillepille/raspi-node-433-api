@@ -10,24 +10,24 @@ rfEmitter = rpi433.emitterTriState({
 var switchStateDict= {}
 
 http.createServer(function (req, res) {
-    var q = url.parse(req.url, true).query
-    var stat = mainController(q.sys,q.family, q.switchCode,q.onOff)
+    const q = url.parse(req.url, true).query
+    const stat = mainController(q.sys,q.family, q.switchCode,q.onOff)
     //asked for status give success + status as plain text
     if(stat == 0 || stat == 1){
         res.writeHead(200, {'Content-Type': 'text/html'})
-        var txt = stat
+        const txt = stat
     //asked for switching, give if switch exists or nor
     }else if (stat == 200) {
         res.writeHead(stat,{'Content-Type': 'text/html'})
-        var txt = 'switched: '+ q.sys + ' ' + q.family + ' ' + q.switchCode
+        const txt = 'switched: '+ q.sys + ' ' + q.family + ' ' + q.switchCode
     //any other gives an internal error
     }else if (stat == 404) {
         res.writeHead(stat,{'Content-Type': 'text/html'})
-        var txt = 'Could not find this Switch: ' + q.sys + ' ' + q.family + ' ' + q.switchCode
+        const txt = 'Could not find this Switch: ' + q.sys + ' ' + q.family + ' ' + q.switchCode
     }else {
         console.log('Error!\n received: ' + q.sys + ' ' + q.family + ' ' + q.switchCode + ' status: ' + stat)
         res.writeHead(502, {'Content-Type': 'text/html'})
-        var txt ='502 Internal Server Error!'
+        const txt ='502 Internal Server Error!'
     }
     res.end(txt)
 }).listen(8080)
@@ -37,7 +37,7 @@ function mainController(sys, familyCode, switchCode, onOff){
     var code = ''
     var returnCode = 502
     if(onOff == 2){
-        var state = getState(familyCode,switchCode)
+        const state = getState(familyCode,switchCode)
         // in case the node just started and doesnt know the current state of a switch
         // the default is off.
         if (state == 0 || state == 1){
@@ -45,13 +45,13 @@ function mainController(sys, familyCode, switchCode, onOff){
         }else {
             return 0
         }
-    }else if(onOff == 0 || onOff == 1){
+    }else if( onOff == 0 || onOff == 1 ){
         switch (sys){
             case 'inter':
                 code = generateIntertechnoCode(familyCode,switchCode,onOff)
                 changeState(familyCode,switchCode,onOff)
                 returnCode = 200
-                break;
+                break
             case 'elro':
                 code = generateElroCode(familyCode,switchCode,onOff)
                 changeState(familyCode,switchCode,onOff)
@@ -71,8 +71,8 @@ function mainController(sys, familyCode, switchCode, onOff){
 
 // receive the current state of a switch
 function getState(familyCode, switchCode){
-    var code = familyCode.toString() + switchCode.toString()
-    var state = switchStateDict[code]
+    const code = familyCode.toString() + switchCode.toString()
+    const state = switchStateDict[code]
     //what if switch doesnt exist
     if(state == 1 || state == 0){
         return state
@@ -82,47 +82,39 @@ function getState(familyCode, switchCode){
 }
 // update the current state of a switch
 function changeState(familyCode,switchCode,onOff){
-    var code = familyCode.toString() + switchCode.toString()
+    const code = familyCode.toString() + switchCode.toString()
     switchStateDict[code] = onOff
     console.log(code + ': ' + switchStateDict[code])
 }
 
 // Generate Code for Intertechno Switches for sending it via sendTriState()
 function generateIntertechnoCode(familyCode, switchCode, onOff){
-    var codes = ['0000', 'F000', '0F00', 'FF00', '00F0', 'F0F0', '0FF0', 'FFF0',
+    const codes = ['0000', 'F000', '0F00', 'FF00', '00F0', 'F0F0', '0FF0', 'FFF0',
                  '000F', 'F00F', '0F0F', 'FF0F', '00FF', 'F0FF', '0FFF', 'FFFF']
     var finalCode = ''
     finalCode += codes[familyCode-1]
     finalCode += codes[switchCode-1]
     finalCode += '0F'
-    if (onOff == 1){
-        finalCode += 'FF'
-    }else{
-        finalCode += 'F0'
-    }
+    finalCode += ( onOff == 1 ? 'FF' : 'F0')
+
     return finalCode
 }
 
 // Generate Code for ELRO Switches for sending it via sendTriState()
 function generateElroCode(familyCode, switchCode, onOff){
     var finalCode = ''
-    var familyCodeArray = familyCode.toString().split('')
+    const familyCodeArray = familyCode.toString().split('')
     //from 10101 to F0F0F
     finalCode += replaceOnes(familyCodeArray, true)
-    var sn = Number(switchCode)
-    var switchBinaryCode = sn.toString(2)
-    switchBinaryCode = replaceOnes(switchBinaryCode,true)
+    const sn = Number(switchCode)
+    const switchBinaryCode = replaceOnes(sn.toString(2) , true)
     //fill up to 5 bits
     while(switchBinaryCode.length < 5){
         switchBinaryCode = 'F' + switchBinaryCode
     }
     finalCode += switchBinaryCode
     //add bits for on/off
-    if (onOff == 1){
-        finalCode += '0F'
-    }else{
-        finalCode += 'F0'
-    }
+    finalCode += ( onOff == 1 ? '0F' : 'F0')
     return finalCode;
 }
 
@@ -131,17 +123,9 @@ function replaceOnes(string,inverted){
     var result = ''
     for (x in string){
         if(inverted){
-            if(string[x] == 1){
-                result += '0'
-            }else{
-                result += 'F'
-            }
+            result += (string[x] == 1 ? '0' : 'F')
         }else{
-            if(string[x] == 1){
-                result += 'F'
-            }else{
-                result += '0'
-            }
+            result += (string[x] == 1 ? 'F' : '0')
         }
     }
     return result
@@ -149,7 +133,7 @@ function replaceOnes(string,inverted){
 
 // sleep for multiple Calls by a e.g. a scene
 function sleep(time, callback) {
-    var stop = new Date().getTime()
+    const stop = new Date().getTime()
     while(new Date().getTime() < stop + time) {
         ;
     }
